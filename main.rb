@@ -1,5 +1,16 @@
+require 'nkf'
+
 class Message
   def initialize
+    @event = Event.new
+  end
+
+  def alertNoNumber num
+    if num == 1 then
+      printf "あなたが今出来るのは移動先「1」を選ぶか、「status」でステータスを見る事だけだ。\n"
+    else
+      printf "あなたが今出来るのは移動先を1〜#{num}で選ぶか、「status」でステータスを見る事だけだ。\n"
+    end
   end
 
   def inputWait
@@ -25,15 +36,27 @@ class Message
       printf "君の前に三叉路が現れた。どの道を選ぶかは君次第だ。\n"
     end
   end
+
+  def reeventlist list
+    list.each { |key, value|
+      printf "#{key}.#{@event.getEventName(value)}\n"
+    }
+  end
 end
 
 class Player
   def initialize inputName
-    name = inputName
-    hp = 10
-    mp = 10
-    item = []
-    equip = []
+    @name = inputName
+    @hp = 10
+    @mp = 10
+    @item = []
+    @equip = []
+  end
+
+  def viewStatus
+    printf "==========\n"
+    printf "#{@name}\nHP:#{@hp}\nMP:#{@mp}\n消耗品:#{@item}\n装備品:#{@equip}\n"
+    printf "==========\n"
   end
 end
 
@@ -41,18 +64,22 @@ class Event
   def initialize
   end
 
-  def getEvent eventcode
+  def getEventName eventcode
     case eventcode
     when 1
       return "ランダムイベント"
     when 2
       return "エンカウントバトル"
     when 3
-      return "宝箱"
+      return "消耗品宝箱"
     when 4
-      return "レア宝箱"
+      return "装備品宝箱"
     when 5
       return "ショップ"
+    when 6
+      return "鍛冶屋"
+    when 7
+      return "キャンプ地"
     end
   end
 
@@ -70,10 +97,22 @@ while true
   message.routeView(routeNum)
   eventlist = {}
   for i in 1..routeNum do
-    eventcode = rand(1..5)
-    printf "#{i}.#{event.getEvent(eventcode)}\n"
+    eventcode = rand(1..7)
+    printf "#{i}.#{event.getEventName(eventcode)}\n"
     eventlist[i] = eventcode
   end
-  message.inputWait()
-  selectEvent = gets.chomp!
+  while true
+    message.inputWait()
+    selectEvent = gets.chomp!
+    selectEvent = NKF.nkf('-w -Z4', NKF.nkf('--katakana -w', selectEvent)).upcase
+    if selectEvent == 'STATUS' then
+      player.viewStatus()
+      message.reeventlist(eventlist)
+    elsif selectEvent.to_i > routeNum || selectEvent.to_i <= 0 then
+      message.alertNoNumber(routeNum)
+      message.reeventlist(eventlist)
+    else
+      break
+    end
+  end
 end
