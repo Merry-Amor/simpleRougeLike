@@ -11,6 +11,10 @@ class Message
     printf "あなたの名前を教えてください。\n"
   end
 
+  def enterDungon
+    printf "あなたはダンジョンに足を踏み入れた。\n"
+  end
+
   def routeView routeNum
     case routeNum
     when 1
@@ -23,35 +27,53 @@ class Message
   end
 end
 
-def getEvent eventcode
-  case eventcode
-  when 1
-    return "ランダムイベント"
-  when 2
-    return "エンカウントバトル"
-  when 3
-    return "宝箱"
-  when 4
-    return "レア宝箱"
-  when 5
-    return "ショップ"
+class Player
+  def initialize inputName
+    name = inputName
+    hp = 10
+    mp = 10
+    item = []
+    equip = []
   end
 end
 
+class Event
+  def initialize
+  end
+
+  def getEvent eventcode
+    case eventcode
+    when 1
+      return "ランダムイベント"
+    when 2
+      return "エンカウントバトル"
+    when 3
+      return "宝箱"
+    when 4
+      return "レア宝箱"
+    when 5
+      return "ショップ"
+    end
+  end
+
+end
+
 message = Message.new
+event = Event.new
 message.welcomeMessage()
 message.inputWait()
 playerName = gets.chomp!
-printf "nice to meet you #{playerName}\n"
+player = Player.new(playerName)
+message.enterDungon()
 while true
   routeNum = rand(1..3)
   message.routeView(routeNum)
-  eventlist = []
+  eventlist = {}
   for i in 1..routeNum do
     eventcode = rand(1..5)
-    printf "#{i}.#{getEvent(eventcode)}\n"
+    printf "#{i}.#{event.getEvent(eventcode)}\n"
+    eventlist[i] = eventcode
   end
   message.inputWait()
   selectEvent = gets.chomp!
-
 end
