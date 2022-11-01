@@ -49,13 +49,24 @@ class Player
     @name = inputName
     @hp = 10
     @mp = 10
-    @item = []
-    @equip = []
+    @atk = 1
+    @atk_bonus = 0
+    @mgc = 1
+    @mgc_bonus = 0
+    @def = 0
+    @def_bonus = 0
+    @mdef = 0
+    @mdef_bonus = 0
+    @items = []
+    @equips = []
   end
 
   def viewStatus
+    #実際にはここに消耗品と装備品をIDから名前のリストにする処理を追加する必要あり
+    items = @items
+    equips = @equips
     printf "==========\n"
-    printf "#{@name}\nHP:#{@hp}\nMP:#{@mp}\n消耗品:#{@item}\n装備品:#{@equip}\n"
+    printf "#{@name}\nHP:#{@hp}\nMP:#{@mp}\n攻撃力:#{@atk} + #{@atk_bonus}\n魔法力:#{@mgc} + #{@mgc_bonus}\n防御力:#{@def} + #{@def_bonus}\n魔法防御力:#{@mdef} + #{@mdef_bonus}\n消耗品:#{items}\n装備品:#{equips}\n"
     printf "==========\n"
   end
 end
