@@ -1,8 +1,8 @@
 require 'nkf'
 
 class Message
-  def initialize
-    @event = Event.new
+  def initialize event
+    @event = event
   end
 
   def alertNoNumber num
@@ -73,31 +73,21 @@ end
 
 class Event
   def initialize
+    @event_list = ["ランダムイベント","エンカウントバトル","消耗品宝箱","装備品宝箱","ショップ","鍛冶屋","キャンプ地"]
+  end
+
+  def getNumberOfEvent
+  return @event_list.length
   end
 
   def getEventName eventcode
-    case eventcode
-    when 1
-      return "ランダムイベント"
-    when 2
-      return "エンカウントバトル"
-    when 3
-      return "消耗品宝箱"
-    when 4
-      return "装備品宝箱"
-    when 5
-      return "ショップ"
-    when 6
-      return "鍛冶屋"
-    when 7
-      return "キャンプ地"
-    end
+    return @event_list[eventcode - 1]
   end
 
 end
 
-message = Message.new
 event = Event.new
+message = Message.new(event)
 message.welcomeMessage()
 message.inputWait()
 playerName = gets.chomp!
@@ -108,7 +98,7 @@ while true
   message.routeView(routeNum)
   eventlist = {}
   for i in 1..routeNum do
-    eventcode = rand(1..7)
+    eventcode = rand(1..event.getNumberOfEvent())
     printf "#{i}.#{event.getEventName(eventcode)}\n"
     eventlist[i] = eventcode
   end
