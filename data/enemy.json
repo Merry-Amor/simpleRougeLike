@@ -1,0 +1,21 @@
+[
+  {
+    "name" : "チョロチョロ鼠",
+    "hp": 6,
+    "mp": 0,
+    "atk": 1,
+    "atk_bonus": 0,
+    "mgc": 0,
+    "mgc_bonus": 0,
+    "def": 0,
+    "def_bonus": 0,
+    "mdef": 0,
+    "mdef_bonus": 0,
+    "drop_money": 1,
+    "routine": ["A","N"],
+    "encount_message": "鼠が君の足元をチョロチョロと歩き回る。その牙は君に噛み付く隙を狙っているようだ。",
+    "subjugation_message": "鼠は君の鋭い攻撃の前に倒れ伏した。",
+    "attack_message": "鼠は鋭い牙を君に突き立てる。",
+    "nothing_message": "鼠は君の足元をチョロチョロと歩き回り続けている。"
+  }
+]
