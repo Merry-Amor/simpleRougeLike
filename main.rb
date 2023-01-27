@@ -60,6 +60,10 @@ class Message
     printf "君は敵に向けて武器を振るった。\n"
   end
 
+  def playerMAttack
+    printf "君は敵に向けて魔法を放った。\n"
+  end
+
   def dicerollResult name, dice, bonus, total
     printf "#{name}:ころころ……#{dice} + #{bonus} => #{total}\n"
   end
@@ -70,6 +74,14 @@ class Message
 
   def playerAttackSucceess enemyName, result
     printf "君の攻撃は確実に#{enemyName}を傷つけた。#{result}のダメージ！\n"
+  end
+
+  def playerMAttackFail enemyName
+    printf "君の魔法は#{enemyName}の防御魔法により霧散した。\n"
+  end
+
+  def playerMAttackSucceess enemyName, result
+    printf "君の魔法は確実に#{enemyName}を傷つけた。#{result}のダメージ！\n"
   end
 
   def enemyAttackFail enemyName
@@ -151,6 +163,14 @@ class Player
     return @atk_bonus
   end
 
+  def getPlayerMAtk
+    return @mgc
+  end
+
+  def getPlayerMAtkBonus
+    return @mgc_bonus
+  end
+
   def getPlayerDef
     return @def
   end
@@ -166,6 +186,10 @@ class Player
 
   def hpDamage damage
     @hp -= damage
+  end
+
+  def mpUse num
+    @mp -= num
   end
 
   def addMoney money
@@ -280,6 +304,7 @@ class Battle
       when 1
         playerAttack()
       when 2
+        playerMAttack()
       when 3
       when 4
       end
@@ -336,6 +361,30 @@ class Battle
       @message.playerAttackSucceess(@enemyName,result)
       @enemy_now_hp -= result
     end
+  end
+
+  def playerMAttack
+    @message.playerMAttack()
+
+    playerResultArr = @util.diceroll(@player.getPlayerMAtk)
+    playerResult = playerResultArr.inject(:+) + @player.getPlayerMAtkBonus
+    @message.dicerollResult("#{@player.getPlayerName()}の攻撃ロール", playerResultArr, @player.getPlayerMAtkBonus, playerResult)
+
+    enemyResultArr = @util.diceroll(@enemy["mdef"])
+    enemyResult = enemyResultArr.inject(:+) + @enemy["mdef_bonus"]
+    @message.dicerollResult("#{@enemyName}の防御ロール", enemyResultArr, @enemy["mdef_bonus"], enemyResult)
+
+    result = playerResult - enemyResult
+
+    if result <= 0 then
+      @message.playerMAttackFail(@enemyName)
+    else
+      @message.playerMAttackSucceess(@enemyName,result)
+      @enemy_now_hp -= result
+    end
+
+    @player.mpUse(1)
+
   end
 
   def enemyCommand
